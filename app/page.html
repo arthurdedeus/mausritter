@@ -1,0 +1,1252 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Mausritter - Ficha de Personagem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IM+Fell+English:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --parchment: #f4e8d1;
+        --parchment-dark: #e8d5b4;
+        --parchment-deep: #d4bc94;
+        --ink: #2a1f14;
+        --ink-light: #5a4a38;
+        --ink-faint: #8a7a68;
+        --accent: #8b2e16;
+        --accent-light: #c44a28;
+        --gold: #b8860b;
+        --gold-light: #daa520;
+        --hp-green: #4a7c3f;
+        --hp-red: #8b2e16;
+        --condition-bg: #f0dcc0;
+        --slot-bg: rgba(255, 255, 255, 0.4);
+        --slot-border: #c4a97a;
+        --radius: 4px;
+        --shadow-sm: 0 1px 3px rgba(42, 31, 20, 0.12);
+        --shadow-md: 0 3px 8px rgba(42, 31, 20, 0.15);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        font-family: "Crimson Pro", serif;
+        background: #2a1f14;
+        color: var(--ink);
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .sheet {
+        width: 100%;
+        max-width: 480px;
+        background: var(--parchment);
+        background-image:
+          radial-gradient(ellipse at 20% 50%, rgba(200, 170, 120, 0.3) 0%, transparent 50%),
+          radial-gradient(ellipse at 80% 20%, rgba(220, 190, 140, 0.2) 0%, transparent 40%),
+          url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+        min-height: 100dvh;
+        padding: 16px 16px 100px;
+        position: relative;
+      }
+
+      .sheet::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent), var(--gold), var(--accent));
+      }
+
+      /* ── Header ── */
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--parchment-deep);
+        position: relative;
+      }
+
+      .header::after {
+        content: "⚔";
+        position: absolute;
+        bottom: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--parchment);
+        padding: 0 12px;
+        font-size: 18px;
+        color: var(--ink-faint);
+      }
+
+      .header h1 {
+        font-family: "Cinzel", serif;
+        font-weight: 900;
+        font-size: 22px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--accent);
+        text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+      }
+
+      .header .subtitle {
+        font-family: "IM Fell English", serif;
+        font-style: italic;
+        font-size: 13px;
+        color: var(--ink-faint);
+        margin-top: 2px;
+      }
+
+      /* ── Sections ── */
+      .section {
+        margin-bottom: 16px;
+      }
+
+      .section-title {
+        font-family: "Cinzel", serif;
+        font-weight: 700;
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .section-title::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, var(--parchment-deep), transparent);
+      }
+
+      /* ── Inputs ── */
+      input[type="text"],
+      input[type="number"],
+      textarea {
+        font-family: "IM Fell English", serif;
+        font-size: 16px;
+        color: var(--ink);
+        background: var(--slot-bg);
+        border: 1px solid var(--slot-border);
+        border-radius: var(--radius);
+        padding: 8px 10px;
+        width: 100%;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+
+      input:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--gold);
+        box-shadow: 0 0 0 2px rgba(184, 134, 11, 0.15);
+      }
+
+      input[type="number"] {
+        text-align: center;
+        font-family: "Cinzel", serif;
+        font-weight: 700;
+        font-size: 20px;
+        -moz-appearance: textfield;
+        width: 100%;
+      }
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+      }
+
+      label {
+        font-family: "Cinzel", serif;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--ink-light);
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      /* ── Identity Grid ── */
+      .identity-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .identity-grid .full {
+        grid-column: 1 / -1;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ── Portrait ── */
+      .portrait-area {
+        display: flex;
+        gap: 10px;
+        align-items: stretch;
+      }
+
+      .portrait-box {
+        width: 90px;
+        min-height: 90px;
+        flex-shrink: 0;
+        border: 2px dashed var(--slot-border);
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--slot-bg);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: border-color 0.2s;
+      }
+
+      .portrait-box:hover {
+        border-color: var(--gold);
+      }
+
+      .portrait-box .placeholder {
+        font-size: 32px;
+        opacity: 0.3;
+        user-select: none;
+      }
+
+      .portrait-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .portrait-details {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      /* ── Attributes ── */
+      .attributes-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .attr-card {
+        background: var(--slot-bg);
+        border: 1px solid var(--slot-border);
+        border-radius: var(--radius);
+        padding: 8px 6px 6px;
+        text-align: center;
+        position: relative;
+      }
+
+      .attr-card .attr-name {
+        font-family: "Cinzel", serif;
+        font-weight: 900;
+        font-size: 12px;
+        letter-spacing: 2px;
+        color: var(--accent);
+        margin-bottom: 6px;
+      }
+
+      .attr-values {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+      }
+
+      .attr-values label {
+        font-size: 8px;
+        letter-spacing: 1px;
+        text-align: center;
+        margin-bottom: 2px;
+      }
+
+      .attr-values input[type="number"] {
+        font-size: 22px;
+        padding: 4px 2px;
+        height: 42px;
+      }
+
+      .attr-values .max-val input {
+        color: var(--ink-faint);
+        font-size: 18px;
+      }
+
+      .attr-values .cur-val input {
+        color: var(--ink);
+        border-color: var(--gold);
+        background: rgba(255, 255, 255, 0.6);
+      }
+
+      /* ── HP Bar ── */
+      .hp-section {
+        background: var(--slot-bg);
+        border: 1px solid var(--slot-border);
+        border-radius: var(--radius);
+        padding: 10px;
+      }
+
+      .hp-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      .hp-header .attr-name {
+        font-family: "Cinzel", serif;
+        font-weight: 900;
+        font-size: 14px;
+        letter-spacing: 2px;
+        color: var(--hp-green);
+      }
+
+      .hp-inputs {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .hp-inputs input[type="number"] {
+        width: 52px;
+        font-size: 22px;
+        padding: 4px;
+        height: 40px;
+      }
+
+      .hp-inputs .separator {
+        font-family: "Cinzel", serif;
+        font-size: 18px;
+        color: var(--ink-faint);
+      }
+
+      .hp-bar-track {
+        width: 100%;
+        height: 8px;
+        background: var(--parchment-dark);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 6px;
+      }
+
+      .hp-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--hp-green), #6aab5e);
+        border-radius: 4px;
+        transition:
+          width 0.4s ease,
+          background 0.4s ease;
+      }
+
+      .hp-bar-fill.danger {
+        background: linear-gradient(90deg, var(--hp-red), #c44a28);
+      }
+
+      /* ── Inventory ── */
+      .inventory-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+
+      .inv-slot {
+        background: var(--slot-bg);
+        border: 1px solid var(--slot-border);
+        border-radius: var(--radius);
+        padding: 6px;
+        min-height: 70px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        transition: box-shadow 0.2s;
+      }
+
+      .inv-slot:focus-within {
+        box-shadow: var(--shadow-sm);
+        border-color: var(--gold);
+      }
+
+      .inv-slot-label {
+        font-family: "Cinzel", serif;
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--ink-faint);
+        margin-bottom: 4px;
+      }
+
+      .inv-slot input[type="text"] {
+        border: none;
+        background: transparent;
+        padding: 2px 0;
+        font-size: 14px;
+        flex: 1;
+      }
+
+      .inv-slot input:focus {
+        box-shadow: none;
+      }
+
+      .inv-slot .usage-dots {
+        display: flex;
+        gap: 4px;
+        margin-top: auto;
+        padding-top: 4px;
+      }
+
+      .usage-dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 2px solid var(--slot-border);
+        background: transparent;
+        cursor: pointer;
+        transition: all 0.15s;
+        flex-shrink: 0;
+      }
+
+      .usage-dot.filled {
+        background: var(--ink-light);
+        border-color: var(--ink-light);
+      }
+
+      .usage-dot:active {
+        transform: scale(0.85);
+      }
+
+      .carried-labels {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+      }
+
+      .carried-label {
+        font-family: "Crimson Pro", serif;
+        font-size: 11px;
+        color: var(--ink-faint);
+        font-style: italic;
+      }
+
+      .carried-label strong {
+        color: var(--ink-light);
+        font-style: normal;
+      }
+
+      /* ── Pips ── */
+      .pips-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--slot-bg);
+        border: 1px solid var(--slot-border);
+        border-radius: var(--radius);
+        padding: 8px 12px;
+      }
+
+      .pips-row label {
+        margin-bottom: 0;
+        flex-shrink: 0;
+      }
+
+      .pips-row input[type="number"] {
+        font-size: 18px;
+        padding: 4px;
+        height: 36px;
+        flex: 1;
+        max-width: 100px;
+      }
+
+      .pips-row .pip-note {
+        font-family: "Crimson Pro", serif;
+        font-size: 12px;
+        color: var(--ink-faint);
+        font-style: italic;
+      }
+
+      /* ── Level / Grit / XP ── */
+      .progress-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+      }
+
+      .progress-card {
+        background: var(--slot-bg);
+        border: 1px solid var(--slot-border);
+        border-radius: var(--radius);
+        padding: 8px;
+        text-align: center;
+      }
+
+      .progress-card label {
+        margin-bottom: 4px;
+      }
+
+      .progress-card input[type="number"] {
+        font-size: 20px;
+        padding: 4px;
+        height: 40px;
+      }
+
+      .progress-note {
+        font-family: "Crimson Pro", serif;
+        font-size: 10px;
+        color: var(--ink-faint);
+        font-style: italic;
+        margin-top: 4px;
+      }
+
+      /* ── Conditions ── */
+      .conditions-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .condition-slot {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--condition-bg);
+        border: 1px dashed var(--slot-border);
+        border-radius: var(--radius);
+        padding: 8px 10px;
+        min-height: 44px;
+      }
+
+      .condition-slot .remove-btn {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 1px solid var(--slot-border);
+        background: var(--parchment);
+        color: var(--accent);
+        font-family: "Cinzel", serif;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.15s;
+        line-height: 1;
+      }
+
+      .condition-slot .remove-btn:hover {
+        background: var(--accent);
+        color: var(--parchment);
+      }
+
+      .condition-slot input[type="text"] {
+        border: none;
+        background: transparent;
+        font-size: 14px;
+        flex: 1;
+        padding: 4px 0;
+      }
+
+      .condition-slot input:focus {
+        box-shadow: none;
+      }
+
+      .add-btn {
+        width: 100%;
+        padding: 10px;
+        border: 2px dashed var(--slot-border);
+        border-radius: var(--radius);
+        background: transparent;
+        font-family: "Cinzel", serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--ink-faint);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .add-btn:hover,
+      .add-btn:active {
+        border-color: var(--gold);
+        color: var(--gold);
+        background: rgba(184, 134, 11, 0.05);
+      }
+
+      /* ── Notes ── */
+      textarea {
+        font-family: "IM Fell English", serif;
+        font-size: 15px;
+        resize: vertical;
+        min-height: 80px;
+        line-height: 1.6;
+      }
+
+      /* ── Banked Items ── */
+      .banked-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .banked-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .banked-item input[type="text"] {
+        flex: 1;
+        font-size: 14px;
+        padding: 6px 8px;
+      }
+
+      .banked-item .remove-btn {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 1px solid var(--slot-border);
+        background: var(--parchment);
+        color: var(--accent);
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      /* ── Footer Actions ── */
+      .footer-actions {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, var(--parchment) 70%, transparent);
+        padding: 16px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        z-index: 10;
+      }
+
+      .footer-actions button {
+        font-family: "Cinzel", serif;
+        font-weight: 700;
+        font-size: 11px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 10px 20px;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 2px solid var(--ink-light);
+        background: var(--ink);
+        color: var(--parchment);
+      }
+
+      .footer-actions button:hover {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .footer-actions button.secondary {
+        background: transparent;
+        color: var(--ink-light);
+        border-color: var(--slot-border);
+      }
+
+      .footer-actions button.secondary:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* ── Toast ── */
+      .toast {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: var(--ink);
+        color: var(--parchment);
+        font-family: "Cinzel", serif;
+        font-size: 12px;
+        letter-spacing: 1px;
+        padding: 10px 24px;
+        border-radius: 20px;
+        opacity: 0;
+        transition: all 0.3s ease;
+        pointer-events: none;
+        z-index: 100;
+        white-space: nowrap;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      /* ── Divider ornament ── */
+      .ornament {
+        text-align: center;
+        color: var(--ink-faint);
+        font-size: 14px;
+        margin: 8px 0;
+        opacity: 0.4;
+        letter-spacing: 6px;
+        user-select: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sheet" id="sheet">
+      <!-- Header -->
+      <div class="header">
+        <h1>Mausritter</h1>
+        <div class="subtitle">Ficha de Personagem</div>
+      </div>
+
+      <!-- Identity -->
+      <div class="section">
+        <div class="section-title">Identidade</div>
+        <div class="portrait-area">
+          <div class="portrait-box" id="portraitBox" title="Toque para adicionar retrato">
+            <span class="placeholder">🐭</span>
+          </div>
+          <div class="portrait-details">
+            <div class="field">
+              <label>Nome</label>
+              <input type="text" id="name" placeholder="Ex: Hazel Oakwhisker" />
+            </div>
+            <div class="field">
+              <label>Background</label>
+              <input type="text" id="background" placeholder="Ex: Apothecary's apprentice" />
+            </div>
+          </div>
+        </div>
+        <div class="identity-grid" style="margin-top: 8px">
+          <div class="field">
+            <label>Signo</label>
+            <input type="text" id="birthsign" placeholder="Ex: Acorn" />
+          </div>
+          <div class="field">
+            <label>Disposição</label>
+            <input type="text" id="disposition" placeholder="Ex: Inquisitive" />
+          </div>
+          <div class="field">
+            <label>Pelagem</label>
+            <input type="text" id="coat" placeholder="Ex: Tan brindle" />
+          </div>
+          <div class="field">
+            <label>Aparência</label>
+            <input type="text" id="look" placeholder="Ex: Scarred body" />
+          </div>
+        </div>
+      </div>
+
+      <div class="ornament">· · ·</div>
+
+      <!-- Attributes -->
+      <div class="section">
+        <div class="section-title">Atributos</div>
+        <div class="attributes-row">
+          <div class="attr-card">
+            <div class="attr-name">STR</div>
+            <div class="attr-values">
+              <div class="max-val">
+                <label>Max</label>
+                <input type="number" id="str-max" min="1" max="18" value="10" />
+              </div>
+              <div class="cur-val">
+                <label>Atual</label>
+                <input type="number" id="str-cur" min="0" max="18" value="10" />
+              </div>
+            </div>
+          </div>
+          <div class="attr-card">
+            <div class="attr-name">DEX</div>
+            <div class="attr-values">
+              <div class="max-val">
+                <label>Max</label>
+                <input type="number" id="dex-max" min="1" max="18" value="10" />
+              </div>
+              <div class="cur-val">
+                <label>Atual</label>
+                <input type="number" id="dex-cur" min="0" max="18" value="10" />
+              </div>
+            </div>
+          </div>
+          <div class="attr-card">
+            <div class="attr-name">WIL</div>
+            <div class="attr-values">
+              <div class="max-val">
+                <label>Max</label>
+                <input type="number" id="wil-max" min="1" max="18" value="10" />
+              </div>
+              <div class="cur-val">
+                <label>Atual</label>
+                <input type="number" id="wil-cur" min="0" max="18" value="10" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HP -->
+        <div class="hp-section">
+          <div class="hp-header">
+            <div class="attr-name">HP</div>
+            <div class="hp-inputs">
+              <div style="text-align: center">
+                <label>Atual</label>
+                <input type="number" id="hp-cur" min="0" max="18" value="4" />
+              </div>
+              <span class="separator">/</span>
+              <div style="text-align: center">
+                <label>Max</label>
+                <input type="number" id="hp-max" min="1" max="18" value="4" />
+              </div>
+            </div>
+          </div>
+          <div class="hp-bar-track">
+            <div class="hp-bar-fill" id="hpBar" style="width: 100%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ornament">· · ·</div>
+
+      <!-- Inventory -->
+      <div class="section">
+        <div class="section-title">Inventário</div>
+        <div class="carried-labels">
+          <span class="carried-label"><strong>Paw:</strong> Pronto para uso</span>
+          <span class="carried-label"><strong>Body:</strong> Rápido de pegar</span>
+          <span class="carried-label"><strong>Pack:</strong> Demora para pegar</span>
+        </div>
+        <div class="inventory-grid" id="inventoryGrid">
+          <div class="inv-slot">
+            <div class="inv-slot-label">Main Paw</div>
+            <input type="text" data-slot="0" placeholder="—" />
+            <div class="usage-dots">
+              <div class="usage-dot" data-slot="0" data-dot="0"></div>
+              <div class="usage-dot" data-slot="0" data-dot="1"></div>
+              <div class="usage-dot" data-slot="0" data-dot="2"></div>
+            </div>
+          </div>
+          <div class="inv-slot">
+            <div class="inv-slot-label">Body</div>
+            <input type="text" data-slot="1" placeholder="—" />
+            <div class="usage-dots">
+              <div class="usage-dot" data-slot="1" data-dot="0"></div>
+              <div class="usage-dot" data-slot="1" data-dot="1"></div>
+              <div class="usage-dot" data-slot="1" data-dot="2"></div>
+            </div>
+          </div>
+          <div class="inv-slot">
+            <div class="inv-slot-label">Off Paw</div>
+            <input type="text" data-slot="2" placeholder="—" />
+            <div class="usage-dots">
+              <div class="usage-dot" data-slot="2" data-dot="0"></div>
+              <div class="usage-dot" data-slot="2" data-dot="1"></div>
+              <div class="usage-dot" data-slot="2" data-dot="2"></div>
+            </div>
+          </div>
+          <div class="inv-slot">
+            <div class="inv-slot-label">Body</div>
+            <input type="text" data-slot="3" placeholder="—" />
+            <div class="usage-dots">
+              <div class="usage-dot" data-slot="3" data-dot="0"></div>
+              <div class="usage-dot" data-slot="3" data-dot="1"></div>
+              <div class="usage-dot" data-slot="3" data-dot="2"></div>
+            </div>
+          </div>
+          <div class="inv-slot">
+            <div class="inv-slot-label">Pack 1</div>
+            <input type="text" data-slot="4" placeholder="—" />
+            <div class="usage-dots">
+              <div class="usage-dot" data-slot="4" data-dot="0"></div>
+              <div class="usage-dot" data-slot="4" data-dot="1"></div>
+              <div class="usage-dot" data-slot="4" data-dot="2"></div>
+            </div>
+          </div>
+          <div class="inv-slot">
+            <div class="inv-slot-label">Pack 2</div>
+            <input type="text" data-slot="5" placeholder="—" />
+            <div class="usage-dots">
+              <div class="usage-dot" data-slot="5" data-dot="0"></div>
+              <div class="usage-dot" data-slot="5" data-dot="1"></div>
+              <div class="usage-dot" data-slot="5" data-dot="2"></div>
+            </div>
+          </div>
+          <div class="inv-slot">
+            <div class="inv-slot-label">Pack 3</div>
+            <input type="text" data-slot="6" placeholder="—" />
+            <div class="usage-dots">
+              <div class="usage-dot" data-slot="6" data-dot="0"></div>
+              <div class="usage-dot" data-slot="6" data-dot="1"></div>
+              <div class="usage-dot" data-slot="6" data-dot="2"></div>
+            </div>
+          </div>
+          <div class="inv-slot">
+            <div class="inv-slot-label">Pack 4</div>
+            <input type="text" data-slot="7" placeholder="—" />
+            <div class="usage-dots">
+              <div class="usage-dot" data-slot="7" data-dot="0"></div>
+              <div class="usage-dot" data-slot="7" data-dot="1"></div>
+              <div class="usage-dot" data-slot="7" data-dot="2"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pips -->
+        <div class="pips-row">
+          <label>Pips</label>
+          <input type="number" id="pips" min="0" value="0" />
+          <span class="pip-note">/ 250 = 1 XP</span>
+        </div>
+      </div>
+
+      <div class="ornament">· · ·</div>
+
+      <!-- Level / Grit / XP -->
+      <div class="section">
+        <div class="section-title">Progresso</div>
+        <div class="progress-grid">
+          <div class="progress-card">
+            <label>Level</label>
+            <input type="number" id="level" min="1" max="10" value="1" />
+          </div>
+          <div class="progress-card">
+            <label>XP</label>
+            <input type="number" id="xp" min="0" value="0" />
+            <div class="progress-note">Tesouro recuperado</div>
+          </div>
+          <div class="progress-card">
+            <label>Grit</label>
+            <input type="number" id="grit" min="0" max="3" value="0" />
+            <div class="progress-note">Ignora condições</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ornament">· · ·</div>
+
+      <!-- Conditions -->
+      <div class="section">
+        <div class="section-title">Condições</div>
+        <div class="conditions-list" id="conditionsList"></div>
+        <button class="add-btn" id="addConditionBtn" style="margin-top: 8px">
+          + Adicionar Condição
+        </button>
+      </div>
+
+      <div class="ornament">· · ·</div>
+
+      <!-- Banked Items -->
+      <div class="section">
+        <div class="section-title">Itens Guardados</div>
+        <div class="banked-list" id="bankedList"></div>
+        <button class="add-btn" id="addBankedBtn" style="margin-top: 8px">+ Adicionar Item</button>
+      </div>
+
+      <div class="ornament">· · ·</div>
+
+      <!-- Notes -->
+      <div class="section">
+        <div class="section-title">Anotações</div>
+        <textarea id="notes" placeholder="Anotações de sessão, NPCs, locais..."></textarea>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Footer -->
+    <div class="footer-actions">
+      <button class="secondary" onclick="clearSheet()">Limpar</button>
+      <button onclick="saveSheet()">Salvar</button>
+    </div>
+
+    <script>
+      // ── Usage dots ──
+      document.querySelectorAll(".usage-dot").forEach((dot) => {
+        dot.addEventListener("click", () => {
+          dot.classList.toggle("filled");
+          autoSave();
+        });
+      });
+
+      // ── HP bar ──
+      function updateHpBar() {
+        const cur = parseInt(document.getElementById("hp-cur").value) || 0;
+        const max = parseInt(document.getElementById("hp-max").value) || 1;
+        const pct = Math.max(0, Math.min(100, (cur / max) * 100));
+        const bar = document.getElementById("hpBar");
+        bar.style.width = pct + "%";
+        bar.classList.toggle("danger", pct <= 30);
+      }
+
+      document.getElementById("hp-cur").addEventListener("input", updateHpBar);
+      document.getElementById("hp-max").addEventListener("input", updateHpBar);
+
+      // ── Conditions ──
+      function addCondition(value = "") {
+        const list = document.getElementById("conditionsList");
+        const slot = document.createElement("div");
+        slot.className = "condition-slot";
+        slot.innerHTML = `
+      <button class="remove-btn" onclick="this.parentElement.remove(); autoSave();">✕</button>
+      <input type="text" value="${value}" placeholder="Ex: Exhausted, Frightened, Injured...">
+    `;
+        list.appendChild(slot);
+        if (!value) slot.querySelector("input").focus();
+      }
+
+      document.getElementById("addConditionBtn").addEventListener("click", () => addCondition());
+
+      // ── Banked Items ──
+      function addBankedItem(value = "") {
+        const list = document.getElementById("bankedList");
+        const item = document.createElement("div");
+        item.className = "banked-item";
+        item.innerHTML = `
+      <input type="text" value="${value}" placeholder="Item guardado...">
+      <button class="remove-btn" onclick="this.parentElement.remove(); autoSave();">✕</button>
+    `;
+        list.appendChild(item);
+        if (!value) item.querySelector("input").focus();
+      }
+
+      document.getElementById("addBankedBtn").addEventListener("click", () => addBankedItem());
+
+      // ── Portrait (simple emoji/text toggle) ──
+      const portraits = ["🐭", "🐀", "🗡️", "🧀", "🏰", "🌾", "🍄", "⚔️", "🛡️", "🐾"];
+      let portraitIdx = 0;
+      document.getElementById("portraitBox").addEventListener("click", () => {
+        portraitIdx = (portraitIdx + 1) % portraits.length;
+        document.querySelector("#portraitBox .placeholder").textContent = portraits[portraitIdx];
+        autoSave();
+      });
+
+      // ── Save / Load ──
+      function getSheetData() {
+        const fields = [
+          "name",
+          "background",
+          "birthsign",
+          "disposition",
+          "coat",
+          "look",
+          "str-max",
+          "str-cur",
+          "dex-max",
+          "dex-cur",
+          "wil-max",
+          "wil-cur",
+          "hp-cur",
+          "hp-max",
+          "pips",
+          "level",
+          "xp",
+          "grit",
+          "notes",
+        ];
+        const data = {};
+        fields.forEach((f) => {
+          const el = document.getElementById(f);
+          data[f] = el.value;
+        });
+
+        // Inventory slots
+        data.inventory = [];
+        document.querySelectorAll("#inventoryGrid .inv-slot").forEach((slot) => {
+          const input = slot.querySelector('input[type="text"]');
+          const dots = [...slot.querySelectorAll(".usage-dot")].map((d) =>
+            d.classList.contains("filled"),
+          );
+          data.inventory.push({ item: input.value, dots });
+        });
+
+        // Conditions
+        data.conditions = [...document.querySelectorAll("#conditionsList input")].map(
+          (i) => i.value,
+        );
+
+        // Banked items
+        data.banked = [...document.querySelectorAll("#bankedList input")].map((i) => i.value);
+
+        // Portrait
+        data.portraitIdx = portraitIdx;
+
+        return data;
+      }
+
+      function loadSheetData(data) {
+        if (!data) return;
+        const fields = [
+          "name",
+          "background",
+          "birthsign",
+          "disposition",
+          "coat",
+          "look",
+          "str-max",
+          "str-cur",
+          "dex-max",
+          "dex-cur",
+          "wil-max",
+          "wil-cur",
+          "hp-cur",
+          "hp-max",
+          "pips",
+          "level",
+          "xp",
+          "grit",
+          "notes",
+        ];
+        fields.forEach((f) => {
+          const el = document.getElementById(f);
+          if (el && data[f] !== undefined) el.value = data[f];
+        });
+
+        // Inventory
+        if (data.inventory) {
+          const slots = document.querySelectorAll("#inventoryGrid .inv-slot");
+          data.inventory.forEach((inv, i) => {
+            if (slots[i]) {
+              slots[i].querySelector('input[type="text"]').value = inv.item || "";
+              const dots = slots[i].querySelectorAll(".usage-dot");
+              (inv.dots || []).forEach((filled, j) => {
+                if (dots[j]) dots[j].classList.toggle("filled", filled);
+              });
+            }
+          });
+        }
+
+        // Conditions
+        const condList = document.getElementById("conditionsList");
+        condList.innerHTML = "";
+        (data.conditions || []).forEach((c) => addCondition(c));
+
+        // Banked
+        const bankList = document.getElementById("bankedList");
+        bankList.innerHTML = "";
+        (data.banked || []).forEach((b) => addBankedItem(b));
+
+        // Portrait
+        if (data.portraitIdx !== undefined) {
+          portraitIdx = data.portraitIdx;
+          document.querySelector("#portraitBox .placeholder").textContent = portraits[portraitIdx];
+        }
+
+        updateHpBar();
+      }
+
+      function showToast(msg) {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 2000);
+      }
+
+      function saveSheet() {
+        const data = getSheetData();
+        const charName = data.name || "mouse";
+        const key = "mausritter_" + charName.toLowerCase().replace(/\s+/g, "_");
+        try {
+          localStorage.setItem(key, JSON.stringify(data));
+          localStorage.setItem("mausritter_last", key);
+          showToast("Ficha salva ✓");
+        } catch (e) {
+          // Fallback: save to sessionStorage
+          try {
+            sessionStorage.setItem(key, JSON.stringify(data));
+            sessionStorage.setItem("mausritter_last", key);
+            showToast("Ficha salva (sessão) ✓");
+          } catch (e2) {
+            showToast("Erro ao salvar");
+          }
+        }
+      }
+
+      function loadSheet() {
+        try {
+          const lastKey =
+            localStorage.getItem("mausritter_last") || sessionStorage.getItem("mausritter_last");
+          if (lastKey) {
+            const raw = localStorage.getItem(lastKey) || sessionStorage.getItem(lastKey);
+            if (raw) {
+              loadSheetData(JSON.parse(raw));
+            }
+          }
+        } catch (e) {}
+      }
+
+      let autoSaveTimer;
+      function autoSave() {
+        clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(saveSheet, 2000);
+      }
+
+      // Attach autosave to all inputs
+      document.querySelectorAll("input, textarea").forEach((el) => {
+        el.addEventListener("input", autoSave);
+      });
+
+      function clearSheet() {
+        if (confirm("Limpar toda a ficha? Isso não pode ser desfeito.")) {
+          document.querySelectorAll('input[type="text"], textarea').forEach((i) => (i.value = ""));
+          document.querySelectorAll('input[type="number"]').forEach((i) => {
+            i.value = i.id.includes("max")
+              ? "10"
+              : i.id === "hp-cur" || i.id === "hp-max"
+                ? "4"
+                : "0";
+            if (i.id === "level") i.value = "1";
+          });
+          document.querySelectorAll(".usage-dot").forEach((d) => d.classList.remove("filled"));
+          document.getElementById("conditionsList").innerHTML = "";
+          document.getElementById("bankedList").innerHTML = "";
+          portraitIdx = 0;
+          document.querySelector("#portraitBox .placeholder").textContent = "🐭";
+          updateHpBar();
+          showToast("Ficha limpa");
+        }
+      }
+
+      // Init
+      loadSheet();
+      updateHpBar();
+    </script>
+  </body>
+</html>
