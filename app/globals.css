@@ -708,3 +708,770 @@ textarea {
   flex-direction: column;
   gap: 6px;
 }
+
+/* ── Dice Roller ── */
+.dice-fab {
+  position: fixed;
+  bottom: 80px;
+  right: 16px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: 2px solid var(--gold);
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  box-shadow: var(--shadow-md);
+  transition: all 0.2s;
+}
+
+.dice-fab:hover,
+.dice-fab.open {
+  background: var(--accent);
+  transform: scale(1.05);
+}
+
+.dice-fab-panel {
+  position: fixed;
+  bottom: 140px;
+  right: 16px;
+  z-index: 20;
+  animation: dice-slide-up 0.2s ease;
+}
+
+@keyframes dice-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dice-panel {
+  background: var(--parchment);
+  border: 2px solid var(--slot-border);
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 240px;
+  box-shadow: var(--shadow-md);
+}
+
+.dice-type-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.dice-btn {
+  flex: 1;
+  padding: 6px 2px;
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--slot-bg);
+  border: 2px solid var(--slot-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--ink);
+}
+
+.dice-btn.selected {
+  border-color: var(--gold);
+  background: rgba(184, 134, 11, 0.1);
+  color: var(--gold);
+}
+
+.dice-count-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.dice-count-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--slot-border);
+  background: var(--slot-bg);
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dice-count-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.dice-count-value {
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-size: 18px;
+  font-weight: 700;
+  min-width: 20px;
+  text-align: center;
+}
+
+.dice-roll-btn {
+  width: 100%;
+  padding: 8px;
+  background: var(--ink);
+  color: var(--parchment);
+  border: 2px solid var(--ink-light);
+  border-radius: var(--radius);
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dice-roll-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.dice-roll-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.dice-result {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.dice-result-total {
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--accent);
+}
+
+.dice-result-total.landed {
+  animation: dice-pop 0.3s ease;
+}
+
+@keyframes dice-pop {
+  0% {
+    transform: scale(0.5);
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.dice-result-breakdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.dice-result-die {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: var(--slot-bg);
+  border: 1px solid var(--slot-border);
+  border-radius: 3px;
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.dice-result-die.landed {
+  animation: dice-pop 0.3s ease;
+}
+
+.dice-result-eq {
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-size: 13px;
+  color: var(--ink-faint);
+  margin-left: 4px;
+}
+
+/* ── Creation Wizard ── */
+.wizard-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--parchment);
+  background-image: radial-gradient(
+      ellipse at 20% 50%,
+      rgba(200, 170, 120, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(220, 190, 140, 0.2) 0%,
+      transparent 40%
+    );
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.wizard-header {
+  position: sticky;
+  top: 0;
+  background: var(--parchment);
+  border-bottom: 2px solid var(--parchment-deep);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 51;
+}
+
+.wizard-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--slot-border);
+  background: var(--parchment);
+  color: var(--accent);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.wizard-title {
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  flex: 1;
+}
+
+.wizard-steps {
+  display: flex;
+  gap: 6px;
+}
+
+.wizard-step-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--slot-border);
+  background: transparent;
+  transition: all 0.2s;
+}
+
+.wizard-step-dot.active {
+  border-color: var(--gold);
+  background: var(--gold);
+}
+
+.wizard-step-dot.done {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.wizard-body {
+  flex: 1;
+  padding: 16px;
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+.wizard-step-title {
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.wizard-step-desc {
+  font-family: var(--font-crimson), "Crimson Pro", serif;
+  font-size: 14px;
+  color: var(--ink-faint);
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+.wizard-attr-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.wizard-card {
+  background: var(--slot-bg);
+  border: 2px solid var(--slot-border);
+  border-radius: var(--radius);
+  padding: 12px 8px;
+  text-align: center;
+}
+
+.wizard-attr-card.swappable {
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.wizard-attr-card.swap-selected {
+  border-color: var(--gold);
+  background: rgba(184, 134, 11, 0.1);
+}
+
+.wizard-attr-name {
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-weight: 900;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.wizard-dice-display {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.wizard-die {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-size: 14px;
+  font-weight: 700;
+  border: 1px solid var(--slot-border);
+}
+
+.wizard-die.kept {
+  background: rgba(184, 134, 11, 0.15);
+  border-color: var(--gold);
+  color: var(--ink);
+}
+
+.wizard-die.dropped {
+  background: transparent;
+  color: var(--ink-faint);
+  text-decoration: line-through;
+}
+
+.wizard-attr-value {
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--ink);
+  animation: dice-pop 0.3s ease;
+}
+
+.wizard-roll-btn,
+.wizard-reroll-btn {
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 6px;
+}
+
+.wizard-roll-btn {
+  background: var(--ink);
+  color: var(--parchment);
+  border: 2px solid var(--ink-light);
+}
+
+.wizard-roll-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.wizard-reroll-btn {
+  background: transparent;
+  color: var(--ink-faint);
+  border: 1px dashed var(--slot-border);
+  font-size: 9px;
+}
+
+.wizard-reroll-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.wizard-swap-area {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.wizard-swap-btn {
+  padding: 8px 16px;
+  border: 2px dashed var(--slot-border);
+  border-radius: var(--radius);
+  background: transparent;
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  cursor: pointer;
+}
+
+.wizard-swap-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.wizard-swap-hint {
+  font-family: var(--font-crimson), "Crimson Pro", serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--gold);
+}
+
+.wizard-hp-pips-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.wizard-roll-card {
+  padding: 16px 12px;
+}
+
+.wizard-background-result {
+  margin-top: 16px;
+  background: var(--slot-bg);
+  border: 2px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 12px;
+  text-align: center;
+}
+
+.wizard-bg-name {
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.wizard-bg-items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wizard-bg-item {
+  font-family: var(--font-fell), "IM Fell English", serif;
+  font-size: 14px;
+  color: var(--ink-light);
+}
+
+.wizard-equip-label {
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 8px;
+}
+
+.wizard-equip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.wizard-equip-list span {
+  background: var(--slot-bg);
+  border: 1px solid var(--slot-border);
+  border-radius: var(--radius);
+  padding: 4px 10px;
+  font-family: var(--font-fell), "IM Fell English", serif;
+  font-size: 13px;
+}
+
+.wizard-weapon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.wizard-weapon-card {
+  cursor: pointer;
+  padding: 10px 6px;
+  transition: all 0.15s;
+}
+
+.wizard-weapon-card.selected {
+  border-color: var(--gold);
+  background: rgba(184, 134, 11, 0.1);
+}
+
+.wizard-weapon-name {
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.wizard-weapon-damage {
+  font-family: var(--font-fell), "IM Fell English", serif;
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.wizard-weapon-slots {
+  font-family: var(--font-crimson), "Crimson Pro", serif;
+  font-size: 10px;
+  color: var(--ink-faint);
+  font-style: italic;
+  margin-top: 2px;
+}
+
+.wizard-bonus-pick {
+  cursor: pointer;
+  padding: 8px;
+  font-family: var(--font-fell), "IM Fell English", serif;
+  font-size: 13px;
+}
+
+.wizard-bonus-pick.selected {
+  border-color: var(--gold);
+  background: rgba(184, 134, 11, 0.1);
+}
+
+.wizard-bonus-note {
+  font-family: var(--font-crimson), "Crimson Pro", serif;
+  font-size: 11px;
+  color: var(--ink-faint);
+  font-style: italic;
+  margin-top: 6px;
+}
+
+.wizard-detail-row {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--parchment-deep);
+}
+
+.wizard-detail-label {
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 6px;
+}
+
+.wizard-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wizard-detail-result {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wizard-detail-result > span:first-child {
+  font-family: var(--font-fell), "IM Fell English", serif;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.wizard-detail-sub {
+  font-family: var(--font-crimson), "Crimson Pro", serif;
+  font-size: 12px;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.wizard-detail-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.wizard-roll-btn-sm {
+  padding: 5px 10px;
+  border-radius: var(--radius);
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: var(--ink);
+  color: var(--parchment);
+  border: 1px solid var(--ink-light);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.wizard-roll-btn-sm:hover {
+  background: var(--accent);
+}
+
+.wizard-detail-input {
+  font-family: var(--font-fell), "IM Fell English", serif;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--slot-bg);
+  border: 1px solid var(--slot-border);
+  border-radius: var(--radius);
+  padding: 6px 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.wizard-name-input {
+  font-family: var(--font-fell), "IM Fell English", serif;
+  font-size: 18px;
+  color: var(--ink);
+  background: var(--slot-bg);
+  border: 2px solid var(--slot-border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.wizard-name-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(184, 134, 11, 0.15);
+}
+
+.wizard-nav {
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(to top, var(--parchment) 70%, transparent);
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.wizard-nav-btn {
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 10px 24px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid var(--ink-light);
+  background: var(--ink);
+  color: var(--parchment);
+}
+
+.wizard-nav-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.wizard-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.wizard-nav-btn.secondary {
+  background: transparent;
+  color: var(--ink-light);
+  border-color: var(--slot-border);
+}
+
+.wizard-nav-btn.secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── CTA Banner ── */
+.wizard-cta {
+  background: linear-gradient(
+    135deg,
+    rgba(184, 134, 11, 0.1),
+    rgba(139, 46, 22, 0.08)
+  );
+  border: 2px dashed var(--gold);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  text-align: center;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.wizard-cta:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(184, 134, 11, 0.15),
+    rgba(139, 46, 22, 0.12)
+  );
+  border-color: var(--accent);
+}
+
+.wizard-cta-text {
+  font-family: var(--font-fell), "IM Fell English", serif;
+  font-size: 14px;
+  color: var(--ink-light);
+}
+
+.wizard-cta-action {
+  font-family: var(--font-cinzel), "Cinzel", serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 4px;
+  display: block;
+}
