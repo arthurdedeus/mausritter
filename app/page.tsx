@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import DiceRoller from "./components/dice-roller";
+import CreationWizard, { type WizardResult } from "./components/creation-wizard";
 
 const PORTRAITS = ["\uD83D\uDC2D", "\uD83D\uDC00", "\uD83D\uDDE1\uFE0F", "\uD83E\uDDC0", "\uD83C\uDFF0", "\uD83C\uDF3E", "\uD83C\uDF44", "\u2694\uFE0F", "\uD83D\uDEE1\uFE0F", "\uD83D\uDC3E"];
 const SLOT_LABELS = ["Main Paw", "Body", "Off Paw", "Body", "Pack 1", "Pack 2", "Pack 3", "Pack 4"];
@@ -73,6 +75,7 @@ export default function CharacterSheet() {
   const [data, setData] = useState<SheetData>(createDefaultData);
   const [toast, setToast] = useState("");
   const [loaded, setLoaded] = useState(false);
+  const [showWizard, setShowWizard] = useState(false);
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
@@ -188,6 +191,15 @@ export default function CharacterSheet() {
     }
   }
 
+  function handleWizardComplete(result: WizardResult) {
+    setData((prev) => ({ ...prev, ...result }));
+    setShowWizard(false);
+    window.scrollTo(0, 0);
+    showToast("Personagem criado!");
+  }
+
+  const isBlankSheet = !data.name && data.strMax === "10" && data.dexMax === "10" && data.wilMax === "10";
+
   const hpCur = parseInt(data.hpCur) || 0;
   const hpMax = parseInt(data.hpMax) || 1;
   const hpPct = Math.max(0, Math.min(100, (hpCur / hpMax) * 100));
@@ -207,6 +219,13 @@ export default function CharacterSheet() {
           <h1>Mausritter</h1>
           <div className="subtitle">Ficha de Personagem</div>
         </div>
+
+        {isBlankSheet && (
+          <div className="wizard-cta" onClick={() => setShowWizard(true)}>
+            <div className="wizard-cta-text">Novo por aqui? Crie um personagem com dados!</div>
+            <span className="wizard-cta-action">Criar Personagem</span>
+          </div>
+        )}
 
         {/* Identity */}
         <div className="section">
@@ -507,12 +526,24 @@ export default function CharacterSheet() {
 
       <div className={`toast${toast ? " show" : ""}`}>{toast}</div>
 
+      <DiceRoller />
+
       <div className="footer-actions">
         <button className="secondary" onClick={clearSheet}>
           Limpar
         </button>
+        <button className="secondary" onClick={() => setShowWizard(true)}>
+          Criar
+        </button>
         <button onClick={save}>Salvar</button>
       </div>
+
+      {showWizard && (
+        <CreationWizard
+          onComplete={handleWizardComplete}
+          onCancel={() => setShowWizard(false)}
+        />
+      )}
     </>
   );
 }
